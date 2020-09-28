@@ -1,4 +1,7 @@
-namespace DotNet.Parts.Motherboard
+using DotNet.Parts;
+using DotNet.Parts.Motherboard;
+
+namespace DotNet.Base.Parts.Motherboard
 {
     public abstract class BaseMotherboard : IComputerPart
     {

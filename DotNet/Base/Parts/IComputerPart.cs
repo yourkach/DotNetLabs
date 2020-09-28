@@ -1,10 +1,9 @@
 namespace DotNet.Parts
 {
-    /**
-     * базовый интерфейс для классов комплектующих ПК
-     */
+    // Базовый интерфейс для классов комплектующих ПК
     public interface IComputerPart
     {
+        // Название единицы комплектующего
         public string Name { get; }
     }
 }
