@@ -152,8 +152,10 @@ namespace DotNet.Base
             Console.WriteLine("Motherboard: " + Motherboard?.Name ?? "not installed");
             Console.WriteLine("Power Supply: " + PowerSupplyUnit?.Name ?? "not installed");
             Console.Write("Graphics Card: " + GraphicsCard?.Name ?? "not installed");
-            Console.Write("RAM Modules: " + string.Join(", ", InstalledRamModules.Select(it => it.Name)) + "\n");
-            Console.Write("Storage Drives: " + string.Join(", ", InstalledStorageDrives.Select(it => it.Name)) + "\n");
+            Console.Write(_installedRamModules.Count + "RAM Modules: " +
+                          string.Join(", ", _installedRamModules.Select(it => it.Name)) + "\n");
+            Console.Write(_installedStorageDrives.Count + "Storage Drives: " +
+                          string.Join(", ", _installedStorageDrives.Select(it => it.Name)) + "\n");
         }
     }
 }
