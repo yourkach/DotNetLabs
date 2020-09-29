@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using DotNet.Base.Parts.Memory;
 using DotNet.Base.Parts.Memory.PersistentDataStorage;
@@ -9,68 +10,93 @@ using DotNet.Parts.CPU;
 using DotNet.Parts.GraphicsCard;
 using DotNet.Parts.Motherboard;
 
+#nullable enable
+
 namespace DotNet.Base
 {
     public class PersonalComputer : IPersonalComputer
     {
-        public BaseMotherboard Motherboard { get; private set; }
-        public BasePowerSupplyUnit PowerSupplyUnit { get; private set; }
-        public BaseCpu Cpu { get; private set; }
-        public List<BaseRamModule> InstalledRamModules { get; private set; }
-        public BaseGraphicsCard GraphicsCard { get; private set; }
-        public List<BaseStorageDrive> InstalledStorageDrives { get; private set; }
+        private BaseMotherboard? _motherboard;
+        private BasePowerSupplyUnit? _powerSupplyUnit;
+        private BaseCpu? _cpu;
+        private BaseGraphicsCard? _graphicsCard;
+        private readonly List<BaseRamModule> _installedRamModules = new List<BaseRamModule>();
+        private readonly List<BaseStorageDrive> _installedStorageDrives = new List<BaseStorageDrive>();
 
-        public bool IsWorking { get; private set; }
-
-        public PersonalComputer()
+        public BaseMotherboard? Motherboard
         {
-            InstalledRamModules = new List<BaseRamModule>();
-            InstalledStorageDrives = new List<BaseStorageDrive>();
-        }
-
-        public void InstallMotherboard(BaseMotherboard motherboard)
-        {
-            if (IsWorking) throw new ComputerIsWorkingException();
-            Motherboard = motherboard;
-        }
-
-        public void InstallCpu(BaseCpu cpu)
-        {
-            if (IsWorking) throw new ComputerIsWorkingException();
-            Cpu = cpu;
-        }
-
-        public void InstallRamModule(BaseRamModule module)
-        {
-            if (IsWorking) throw new ComputerIsWorkingException();
-            if (InstalledRamModules.Count < Motherboard.MemorySlotsCount)
+            get => _motherboard;
+            set
             {
-                InstalledRamModules.Add(module);
+                CheckCanReplacePart();
+                _motherboard = value;
             }
         }
 
-        public void InstallPowerSupply(BasePowerSupplyUnit powerSupplyUnit)
+        public BasePowerSupplyUnit? PowerSupplyUnit
         {
-            if (IsWorking) throw new ComputerIsWorkingException();
-            
+            get => _powerSupplyUnit;
+            set
+            {
+                CheckCanReplacePart();
+                _powerSupplyUnit = value;
+            }
         }
 
-        public void InstallGraphicsCard(BaseGraphicsCard graphicsCard)
+        public BaseCpu? Cpu
         {
-            throw new NotImplementedException();
+            get => _cpu;
+            set
+            {
+                CheckCanReplacePart();
+                _cpu = value;
+            }
+        }
+
+        public BaseGraphicsCard? GraphicsCard
+        {
+            get => _graphicsCard;
+            set
+            {
+                CheckCanReplacePart();
+                _graphicsCard = value;
+            }
+        }
+
+        public ImmutableList<BaseRamModule> InstalledRamModules => _installedRamModules.ToImmutableList();
+        public ImmutableList<BaseStorageDrive> InstalledStorageDrives => _installedStorageDrives.ToImmutableList();
+
+        public bool InstallRamModule(BaseRamModule module)
+        {
+            CheckCanReplacePart();
+            if (_installedRamModules.Count < _motherboard.MemorySlotsCount)
+            {
+                _installedRamModules.Add(module);
+                return true;
+            }
+            else return false;
         }
 
         public void InstallStorageDrive(BaseStorageDrive storageDrive)
         {
-            throw new NotImplementedException();
+            CheckCanReplacePart();
+            _installedStorageDrives.Add(storageDrive);
         }
+
+        public bool IsWorking { get; private set; }
+
 
         public void StartComputer()
         {
-            if (CanStartComputer())
+            Console.WriteLine("Trying to start computer...");
+            if (!IsWorking && CanStartComputer())
             {
                 IsWorking = true;
                 Console.WriteLine("Computer started successfully");
+            }
+            else if (IsWorking)
+            {
+                Console.WriteLine("Computer is working already");
             }
             else
             {
@@ -80,7 +106,11 @@ namespace DotNet.Base
 
         public void ShutDown()
         {
-            IsWorking = false;
+            if (IsWorking)
+            {
+                Console.WriteLine("Shut down computer");
+                IsWorking = false;
+            }
         }
 
         private bool CanStartComputer()
@@ -110,6 +140,11 @@ namespace DotNet.Base
         private bool HasRamModules() => InstalledRamModules != null && InstalledRamModules.Count > 0;
         private bool HasStorageDrives() => InstalledStorageDrives != null && InstalledStorageDrives.Count > 0;
         private bool HasGraphics() => Cpu.HasIntegratedGraphics || GraphicsCard != null;
+
+        private void CheckCanReplacePart()
+        {
+            if (IsWorking) throw new ComputerIsWorkingException("Cannot replace parts when computer is working");
+        }
 
         private void PrintInstalledPartsList()
         {

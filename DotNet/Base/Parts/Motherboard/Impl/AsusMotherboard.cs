@@ -4,7 +4,7 @@ namespace DotNet.Base.Parts.Motherboard.Impl
 {
     public class AsusMotherboard : BaseMotherboard
     {
-        public override string Name => "ASUS bla bla";
+        public override string Name => "ASUS PRIME B450-PLUS";
 
         public override SocketType Socket => SocketType.AM4;
 

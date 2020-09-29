@@ -1,4 +1,5 @@
 ﻿using System;
+using DotNet.Base.Factory;
 
 namespace DotNet
 {
@@ -6,7 +7,11 @@ namespace DotNet
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            BaseComputerFactory factory = new ComputerFactoryImpl();
+
+            var computer = factory.Create();
+            
+            computer.StartComputer();
         }
     }
 }
