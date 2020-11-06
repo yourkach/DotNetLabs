@@ -5,6 +5,8 @@ namespace DotNet.Parts.GraphicsCard
         
         public abstract string Name { get; }
 
+        public abstract int Wattage { get; }
+        
         public abstract int MemoryCapacityGb { get; }
 
         // Ширина шины видеокарты

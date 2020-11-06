@@ -6,7 +6,9 @@ namespace DotNet.Base.Parts.Memory
     public abstract class BaseRamModule : IMemoryUnit
     {
         public abstract string Name { get; }
-        
+
+        public abstract int Wattage { get; }
+
         public abstract int CapacityGb { get; }
     }
 }

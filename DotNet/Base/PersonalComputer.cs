@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -6,6 +7,7 @@ using DotNet.Base.Parts.Memory;
 using DotNet.Base.Parts.Memory.PersistentDataStorage;
 using DotNet.Base.Parts.Motherboard;
 using DotNet.Base.Parts.PowerUnit;
+using DotNet.Parts;
 using DotNet.Parts.CPU;
 using DotNet.Parts.GraphicsCard;
 using DotNet.Parts.Motherboard;
@@ -22,6 +24,7 @@ namespace DotNet.Base
         private BaseGraphicsCard? _graphicsCard;
         private readonly List<BaseRamModule> _installedRamModules = new List<BaseRamModule>();
         private readonly List<BaseStorageDrive> _installedStorageDrives = new List<BaseStorageDrive>();
+
 
         public BaseMotherboard? Motherboard
         {
@@ -120,7 +123,6 @@ namespace DotNet.Base
 
         private bool HasAllRequiredParts()
         {
-            PrintInstalledPartsList();
             return HasMotherboard()
                    && HasCpu()
                    && HasPowerSupplyUnit()
@@ -156,6 +158,27 @@ namespace DotNet.Base
                           string.Join(", ", _installedRamModules.Select(it => it.Name)) + "\n");
             Console.Write(_installedStorageDrives.Count + "Storage Drives: " +
                           string.Join(", ", _installedStorageDrives.Select(it => it.Name)) + "\n");
+        }
+        
+        public IEnumerator<IComputerPart> GetEnumerator()
+        {
+            if (_cpu != null) yield return _cpu;
+            if (_motherboard != null) yield return _motherboard;
+            if (_powerSupplyUnit != null) yield return _powerSupplyUnit;
+            if (_graphicsCard != null) yield return _graphicsCard;
+            foreach (var module in _installedRamModules)
+            {
+                yield return module;
+            }
+            foreach (var drive in _installedStorageDrives)
+            {
+                yield return drive;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

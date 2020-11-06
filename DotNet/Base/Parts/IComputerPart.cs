@@ -5,5 +5,8 @@ namespace DotNet.Parts
     {
         // Название единицы комплектующего
         public string Name { get; }
+
+        // Использование комплектующим мощности в Вт
+        public int Wattage => 0;
     }
 }

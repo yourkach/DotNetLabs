@@ -4,6 +4,7 @@ using DotNet.Base.Parts.Memory;
 using DotNet.Base.Parts.Memory.PersistentDataStorage;
 using DotNet.Base.Parts.Motherboard;
 using DotNet.Base.Parts.PowerUnit;
+using DotNet.Parts;
 using DotNet.Parts.CPU;
 using DotNet.Parts.GraphicsCard;
 
@@ -11,7 +12,7 @@ using DotNet.Parts.GraphicsCard;
 
 namespace DotNet.Base
 {
-    public interface IPersonalComputer
+    public interface IPersonalComputer : IEnumerable<IComputerPart>
     {
         // Свойства для основных комплектующих
         public BaseMotherboard? Motherboard { get; set; }
