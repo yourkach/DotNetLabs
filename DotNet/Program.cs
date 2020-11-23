@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DotNet.Base;
 using DotNet.Base.Consultant;
-using DotNet.Base.Creator;
 using DotNet.Base.Factory;
 using DotNet.Base.Parts.CPU.Impl;
 using DotNet.Base.Parts.Memory;
@@ -13,13 +12,13 @@ using DotNet.Parts;
 
 namespace DotNet
 {
-    partial class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            BaseComputerFactory factory = new ComputerFactoryImpl();
+            IFactory<IPersonalComputer> computerFactory = new ComputerFactoryImpl();
             Console.WriteLine("Building computer..\n");
-            var computer = factory.Create();
+            var computer = computerFactory.Create();
             Console.WriteLine("New computer created\n");
 
             Console.WriteLine("Computer parts:");
@@ -28,13 +27,12 @@ namespace DotNet
 
             computer.StartComputer();
             computer.ShutDown();
-            
-            
-            // Ковариантность интерфейса IProductCreator 
-            IPartCreator<IComputerPart> creator = new CpuCreator<IntelCpu>();
-            IComputerPart part = creator.Create();
-            Console.WriteLine(part.Name);
 
+            
+            // Ковариантность интерфейса Factory
+            IFactory<IEnumerable<IComputerPart>> partsCollectionFactory = computerFactory;
+            partsCollectionFactory.Create();
+            
             // Контрвариантность интерфейса IProductConsultant 
             IProductConsultant<MsiMotherboard> cpuConsultant = new MotherboardConsultant();
             cpuConsultant.PrintProductInfo(new MsiMotherboard());

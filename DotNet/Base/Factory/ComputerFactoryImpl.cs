@@ -7,9 +7,9 @@ using DotNet.Parts.GraphicsCard.Impl;
 
 namespace DotNet.Base.Factory
 {
-    public class ComputerFactoryImpl : BaseComputerFactory
+    public class ComputerFactoryImpl : IFactory<IPersonalComputer>
     {
-        public override IPersonalComputer Create()
+        public IPersonalComputer Create()
         {
             var builder = new ComputerBuilder();
             return builder
