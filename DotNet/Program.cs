@@ -23,8 +23,8 @@ namespace DotNet
 
             Console.WriteLine("Computer parts:");
 
-            var helper = new ComputerHelper();
-            helper.EvaluateComputerPowerConsumption(computer);
+            var consultant = new ComputerConsultant();
+            consultant.EvaluatePowerConsumption(computer);
 
             computer.StartComputer();
             computer.ShutDown();

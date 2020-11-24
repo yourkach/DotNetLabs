@@ -1,15 +1,22 @@
 using System;
 using System.Linq;
+using DotNet.Parts;
 
 namespace DotNet.Base
 {
-    public class ComputerHelper
+
+    public interface IComputerConsultant
     {
-        public void EvaluateComputerPowerConsumption(IPersonalComputer computer)
+        public void EvaluatePowerConsumption(IPersonalComputer computer);
+    }
+    
+    public class ComputerConsultant : IComputerConsultant
+    {
+        public void EvaluatePowerConsumption(IPersonalComputer computer)
         {
             Console.WriteLine("Evaluating power consumption");
             var powerConsumption = 0;
-            foreach (var part in computer.OrderByDescending(p => p.Wattage))
+            foreach (var part in computer.OrderByDescending(part => part.Wattage))
             {
                 powerConsumption += part.Wattage;
                 Console.WriteLine(part.Wattage + " - " + part.Name);
