@@ -3,14 +3,14 @@ using DotNet.Base.Parts.Motherboard;
 
 namespace DotNet.Base.Consultant
 {
-    public interface IProductConsultant<in T>
+    public interface IInfoPrinter<in T>
     {
-        void PrintProductInfo(T product);
+        void PrintInfo(T product);
     }
 
-    public class MotherboardConsultant : IProductConsultant<BaseMotherboard>
+    public class MotherboardInfoPrinter : IInfoPrinter<BaseMotherboard>
     {
-        public void PrintProductInfo(BaseMotherboard product)
+        public void PrintInfo(BaseMotherboard product)
         {
             Console.WriteLine("Product info: " + product.Name + ", socket: " + product.Socket + ", Memory slots:" +
                               product.MemorySlotsCount);
