@@ -16,7 +16,11 @@ namespace DotNet.Base
         {
             Console.WriteLine("Evaluating power consumption");
             var powerConsumption = 0;
-            foreach (var part in computer.OrderByDescending(part => part.Wattage))
+
+            computer.SetPartsComparison(CompareByWattageDescending);
+            
+            Console.WriteLine("Parts sorted by wattage:");
+            foreach (var part in computer)
             {
                 powerConsumption += part.Wattage;
                 Console.WriteLine(part.Wattage + " - " + part.Name);
@@ -25,6 +29,11 @@ namespace DotNet.Base
             Console.WriteLine("\nComputer parts wattage sum: " + powerConsumption);
             Console.WriteLine("Computer power supply unit wattage: " + computer.PowerSupplyUnit?.PowerWatts);
             Console.WriteLine();
+        }
+
+        private int CompareByWattageDescending(IComputerPart a, IComputerPart b)
+        {
+            return b.Wattage.CompareTo(a.Wattage);
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DotNet.Base;
-using DotNet.Base.Consultant;
 using DotNet.Base.Factory;
 using DotNet.Base.Parts.CPU.Impl;
 using DotNet.Base.Parts.Memory;
@@ -23,7 +22,7 @@ namespace DotNet
 
             Console.WriteLine("Computer parts:");
 
-            var consultant = new ComputerConsultant();
+            IComputerConsultant consultant = new ComputerConsultant();
             consultant.EvaluatePowerConsumption(computer);
 
             computer.StartComputer();
@@ -34,9 +33,6 @@ namespace DotNet
             IFactory<IEnumerable<IComputerPart>> partsCollectionFactory = computerFactory;
             var partsCollection = partsCollectionFactory.Create();
             
-            // Контрвариантность интерфейса IProductConsultant 
-            IInfoPrinter<MsiMotherboard> cpuConsultant = new MotherboardInfoPrinter();
-            cpuConsultant.PrintInfo(new MsiMotherboard());
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using DotNet.Base.Parts.Memory;
@@ -21,6 +22,8 @@ namespace DotNet.Base
         public BaseGraphicsCard? GraphicsCard { get; set; }
         public ImmutableList<BaseRamModule> InstalledRamModules { get; }
         public ImmutableList<BaseStorageDrive> InstalledStorageDrives { get; }
+
+        public void SetPartsComparison(Comparison<IComputerPart> comparison);
 
         // Метод добавления нового модуля памяти, возвращает флаг об успешности установки
         public bool InstallRamModule(BaseRamModule module);

@@ -69,15 +69,18 @@ namespace DotNet.Base
         public ImmutableList<BaseRamModule> InstalledRamModules => _installedRamModules.ToImmutableList();
         public ImmutableList<BaseStorageDrive> InstalledStorageDrives => _installedStorageDrives.ToImmutableList();
 
+        private Comparison<IComputerPart>? _installedPartsComparison;
+        public void SetPartsComparison(Comparison<IComputerPart>? comparison)
+        {
+            _installedPartsComparison = comparison;
+        }
+
         public bool InstallRamModule(BaseRamModule module)
         {
             CheckCanReplacePart();
-            if (_installedRamModules.Count < _motherboard.MemorySlotsCount)
-            {
-                _installedRamModules.Add(module);
-                return true;
-            }
-            else return false;
+            if (_installedRamModules.Count >= (_motherboard?.MemorySlotsCount ?? 0)) return false;
+            _installedRamModules.Add(module);
+            return true;
         }
 
         public void InstallStorageDrive(BaseStorageDrive storageDrive)
@@ -136,12 +139,12 @@ namespace DotNet.Base
             return Motherboard.Socket == Cpu.Socket;
         }
 
-        private bool HasMotherboard() => Motherboard != null;
-        private bool HasCpu() => Cpu != null;
-        private bool HasPowerSupplyUnit() => PowerSupplyUnit != null;
-        private bool HasRamModules() => InstalledRamModules != null && InstalledRamModules.Count > 0;
-        private bool HasStorageDrives() => InstalledStorageDrives != null && InstalledStorageDrives.Count > 0;
-        private bool HasGraphics() => Cpu.HasIntegratedGraphics || GraphicsCard != null;
+        private bool HasMotherboard() => _motherboard != null;
+        private bool HasCpu() => _cpu != null;
+        private bool HasPowerSupplyUnit() => _powerSupplyUnit != null;
+        private bool HasRamModules() => _installedRamModules.Count > 0;
+        private bool HasStorageDrives() => _installedStorageDrives.Count > 0;
+        private bool HasGraphics() => (_cpu?.HasIntegratedGraphics ?? false) || GraphicsCard != null;
 
         private void CheckCanReplacePart()
         {
@@ -159,26 +162,25 @@ namespace DotNet.Base
             Console.Write(_installedStorageDrives.Count + "Storage Drives: " +
                           string.Join(", ", _installedStorageDrives.Select(it => it.Name)) + "\n");
         }
-        
-        public IEnumerator<IComputerPart> GetEnumerator()
+
+        private List<IComputerPart> _installedPartsList
         {
-            if (_cpu != null) yield return _cpu;
-            if (_motherboard != null) yield return _motherboard;
-            if (_powerSupplyUnit != null) yield return _powerSupplyUnit;
-            if (_graphicsCard != null) yield return _graphicsCard;
-            foreach (var module in _installedRamModules)
+            get
             {
-                yield return module;
-            }
-            foreach (var drive in _installedStorageDrives)
-            {
-                yield return drive;
+                var parts = new List<IComputerPart>();
+                if (_cpu != null) parts.Add(_cpu);
+                if (_motherboard != null) parts.Add(_motherboard);
+                if (_powerSupplyUnit != null) parts.Add(_powerSupplyUnit);
+                if (_graphicsCard != null) parts.Add(_graphicsCard);
+                parts.AddRange(_installedRamModules);
+                parts.AddRange(_installedStorageDrives);
+                if (_installedPartsComparison != null) parts.Sort(_installedPartsComparison);
+                return parts;
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        public IEnumerator<IComputerPart> GetEnumerator() => _installedPartsList.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
