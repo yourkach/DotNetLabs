@@ -1,7 +1,5 @@
 using System;
-using System.IO;
 using System.IO.Compression;
-using System.Text;
 
 namespace DotNet.Base.Logger
 {
@@ -11,7 +9,7 @@ namespace DotNet.Base.Logger
 
         private static event LogEventHandler EventHandler;
         
-        private static readonly DateTime _loggerStartTime = DateTime.Now;
+        private static readonly DateTime LoggerStartTime = DateTime.Now;
 
         public static void OnEvent(string message)
         {
@@ -38,52 +36,8 @@ namespace DotNet.Base.Logger
 
         private void WriteEvent(string message)
         {
-            var eventTimeSpan = DateTime.Now - _loggerStartTime;
+            var eventTimeSpan = DateTime.Now - LoggerStartTime;
             _textPrinter.PrintText($"{_prefix} {eventTimeSpan} {message}");
-        }
-    }
-
-    public interface ITextPrinter
-    {
-        void PrintText(string text);
-
-        void Stop();
-    }
-
-    public class ConsoleTextPrinter : ITextPrinter
-    {
-        public void PrintText(string text)
-        {
-            Console.WriteLine(text);
-        }
-
-        public void Stop()
-        {
-        }
-    }
-
-    public class FileTextPrinter : ITextPrinter
-    {
-
-        private StreamWriter _fileStream;
-        
-        private StringBuilder _builder = new StringBuilder();
-
-        private string _filePath;
-
-        public FileTextPrinter(string filePath)
-        {
-            _filePath = filePath;
-        }
-
-        public void PrintText(string text)
-        {
-            _builder.AppendLine(text);
-        }
-
-        public void Stop()
-        {
-            File.WriteAllText(_filePath,_builder.ToString());
         }
     }
 }
