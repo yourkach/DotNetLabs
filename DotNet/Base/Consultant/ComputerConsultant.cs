@@ -28,7 +28,14 @@ namespace DotNet.Base
 
             Console.WriteLine("\nComputer parts wattage sum: " + powerConsumption);
             Console.WriteLine("Computer power supply unit wattage: " + computer.PowerSupplyUnit?.PowerWatts);
-            Console.WriteLine();
+            if (powerConsumption < (computer.PowerSupplyUnit?.PowerWatts ?? 0))
+            {
+                Console.WriteLine("Computer has enough power");
+            }
+            else
+            {
+                Console.WriteLine("Computer doesn't have enough power");
+            }
         }
 
         private int CompareByWattageDescending(IComputerPart a, IComputerPart b)
