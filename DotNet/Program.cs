@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DotNet.Base;
 using DotNet.Base.Factory;
@@ -16,7 +17,10 @@ namespace DotNet
     {
         static void Main(string[] args)
         {
-            var logger = new Logger(new ConsoleTextPrinter());
+            
+            var consoleLogger = new Logger(new ConsoleTextPrinter());
+            var fileLogger = new Logger(new FileTextPrinter($"{DateTime.Now}_logs"));
+            
             Logger.OnEvent("Program started");
 
             IFactory<IPersonalComputer> computerFactory = new ComputerFactoryImpl();
@@ -39,6 +43,9 @@ namespace DotNet
             var partsCollection = partsCollectionFactory.Create();
             
             Logger.OnEvent("Program finished");
+            
+            fileLogger.Stop();
+            consoleLogger.Stop();
         }
     }
 }

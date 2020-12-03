@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Text;
 
 namespace DotNet.Base.Logger
 {
@@ -29,6 +30,11 @@ namespace DotNet.Base.Logger
             _prefix = logsPrefix;
             EventHandler += WriteEvent;
         }
+        
+        public void Stop()
+        {
+            _textPrinter.Stop();
+        }
 
         private void WriteEvent(string message)
         {
@@ -40,6 +46,8 @@ namespace DotNet.Base.Logger
     public interface ITextPrinter
     {
         void PrintText(string text);
+
+        void Stop();
     }
 
     public class ConsoleTextPrinter : ITextPrinter
@@ -48,21 +56,34 @@ namespace DotNet.Base.Logger
         {
             Console.WriteLine(text);
         }
+
+        public void Stop()
+        {
+        }
     }
 
     public class FileTextPrinter : ITextPrinter
     {
 
-        private StreamWriter _fileOutput;
+        private StreamWriter _fileStream;
+        
+        private StringBuilder _builder = new StringBuilder();
+
+        private string _filePath;
 
         public FileTextPrinter(string filePath)
         {
-            _fileOutput = new StreamWriter(filePath, false);
+            _filePath = filePath;
         }
 
         public void PrintText(string text)
         {
-            _fileOutput.WriteLine(text);
+            _builder.AppendLine(text);
+        }
+
+        public void Stop()
+        {
+            File.WriteAllText(_filePath,_builder.ToString());
         }
     }
 }
